@@ -2,6 +2,8 @@ import grpc
 import monitor_pb2
 import monitor_pb2_grpc
 
+rojo= "\033[91m"
+reset= "\033[0m"
 def solicitar_telemetria(stub, id_camion):
     print(f"\nIniciando ingreso para: {id_camion}")
     peticion = monitor_pb2.SuscripcionCamion(
@@ -12,10 +14,10 @@ def solicitar_telemetria(stub, id_camion):
         respuestas = stub.TransmitirTelemetria(peticion)
         for lectura in respuestas:
             if lectura.alerta_critica:
-                print(f"[ALERTA CRÍTICA] {lectura.timestamp} --- {lectura.id_camion} --- Temp: {lectura.temperatura_celsius} celsius")
+                print(f"{rojo}[ALERTA CRÍTICA] {lectura.timestamp} --- {lectura.id_camion} --- Temp: {lectura.temperatura_celsius} celsius{reset}")
             else:
-                print(f"[Cliente] {lectura.timestamp} --- {lectura.id_camion} --- Temp: {lectura.temperatura_celsius} celsius (Normal)")
-                
+                print(f"{reset}[Cliente] {lectura.timestamp} --- {lectura.id_camion} --- Temp: {lectura.temperatura_celsius} celsius (Normal){reset}")
+
     except grpc.RpcError as e:
         print(f"[Error gRPC] Código: {e.code()} Detalle: {e.details()}")
 
